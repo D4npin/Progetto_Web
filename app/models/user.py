@@ -13,5 +13,5 @@ class UserDB(User, table = True): #la classe che rappresenta la tabella del data
     __tablename__ = "user" #nome della classe nel database SQL
     username: str = Field(default=None, primary_key=True)
 
-    class UserPublic(User): #dati restituiti al client
-        pass
+class UserPublic(User): #dati restituiti al client
+    pass
