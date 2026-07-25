@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Query
 from sqlmodel import select, delete
 from app.data.db import SessionDep
+from app.models import registration
 
 from app.models.event import EventCreate, EventPublic, EventDB
 from app.models.user import CreateUser, UserDB
@@ -96,5 +97,34 @@ def register_to_event(id:int, session: SessionDep, user: CreateUser) ->Registrat
     return registration
 
 
+#API opzionali
 
+@router.delete("/") #cancella tutti gli eventi
+
+def delete_all_event(session: SessionDep):
+    """Delete all events."""
+    session.exec(delete(EventDB))
+    session.commit()
+
+    return "Tutti gli eventi sono stati cancellati"
+
+@router.delete("/{id}")
+def delete_event(session: SessionDep, id: int):
+    """Delete the event with the given id."""
+    event = session.get(EventDB, id)
+
+    if event is None: raise HTTPException(status_code=404, detail="EVENTO NON TROVATO")
+
+    registration = session.exec(
+        select(Registration).where(Registration.event_id == id)
+    ).all()
+
+    for registration in registration: #ci serve perchè se cancelliamo l'evento
+                                      #dobbiamo eliminarne anche le registrazioni
+        session.delete(registration)
+
+    session.delete(event)
+    session.commit()
+
+    return "Evento cancellato"
 
