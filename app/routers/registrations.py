@@ -23,6 +23,9 @@ def get_registrations(
 def delete_registrations(username: str, event_id: int, session: SessionDep) ->dict:
     """"Delete registration"""
 
+    #Qui verifichiamo l'esistenza dell'evento, dell'utente registrato
+    #e della registrazione dell'utente:
+    #restituisco errore 404 nel caso in cui uno di questi non esista
     event = session.get(EventDB, event_id)
     if event is None: raise HTTPException(status_code = 404, detail = "EVENTO NON TROVATO")
 
