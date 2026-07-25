@@ -6,8 +6,8 @@ from faker import Faker
 from app.config import config
 # TODO: remember to import all the DB models here
 # app/data/db.py — assicurarsi che questi import siano presenti
-from app.models.event import Event
-from app.models.user import User
+from app.models.event import EventDB      # NOQA
+from app.models.user import UserDB        # NOQA
 from app.models.registration import Registration  # NOQA
 
 sqlite_file_name = config.root_dir / "data/database.db"
