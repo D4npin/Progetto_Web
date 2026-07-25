@@ -24,7 +24,7 @@ def create_user(user: CreateUser, session: SessionDep) -> UserPublic:
     # Controllo a monte: se lo username esiste già rispondo 409
     existing_user = session.exec(
         select(UserDB).where(UserDB.username == user.username)
-    ).first()
+    ).first()#cerca un eventuale utente già presente
     if existing_user is not None:
         raise HTTPException(status_code = 409, detail = "Username already taken")
     user_db = UserDB.model_validate(user)
@@ -48,10 +48,10 @@ def get_user(username: str, session: SessionDep) -> UserPublic:
 @router.delete("")
 def delete_all_users(session: SessionDep) -> dict:
     """Deletes all users"""
-    session.exec(delete(Registration))
+    session.exec(delete(Registration))#elimino prima le registrazioni e poi gli utenti
     session.exec(delete(UserDB))
     session.commit()
-    return {"message": "Users successfully deleted"}
+    return {"message": "Utenti cancellati con successo"}
 
 
 @router.delete("/{username}")
@@ -61,8 +61,7 @@ def delete_user(username: str, session: SessionDep) -> dict:
         select(UserDB).where(UserDB.username == username)
     ).first()
     if user is None:
-        raise HTTPException(status_code=404, detail="User not found")
-    # Cascade a mano: SQLite di default non applica le foreign key, cancello io le registrazioni dell'utente
+        raise HTTPException(status_code = 404, detail = "User not found")
     registrations = session.exec(
         select(Registration).where(Registration.username == username)
     ).all()
@@ -70,4 +69,4 @@ def delete_user(username: str, session: SessionDep) -> dict:
         session.delete(registration)
     session.delete(user)
     session.commit()
-    return {"message": "User successfully deleted"}
+    return {"message": "Utente cancellato con successo"}
