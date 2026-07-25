@@ -22,5 +22,5 @@ class EventPublic(Event): #Classe da utilizzare nelle GET
 
 class EventDB(Event, table=True): #Collegamento tra codice e DB
     __tablename__ = "event" #Senza questo il DB assegnerebbe un nome automatico
-                            #invece noi vogliamo esattamente questo nome
+
     id: int = Field(default=None, primary_key=True)
