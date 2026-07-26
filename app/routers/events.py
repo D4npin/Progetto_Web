@@ -27,7 +27,7 @@ def get_event_by_id(session: SessionDep, id: int) -> EventPublic:
 
     if event is None: #utilizzare is none al posto di not event è più preciso in quanto
                       # questo oggetto è proprio l'assenza di risultato
-        raise HTTPException(status_code=404, detail="Event not found")
+        raise HTTPException(status_code=404, detail="EVENTO NON TROVATO")
     return event
 
 @router.post("/")
@@ -45,7 +45,7 @@ def replace_event(session: SessionDep, id: int, new_event: EventCreate):
 
     event=session.get(EventDB, id)
 
-    if event is None: raise HTTPException(status_code=404, detail="Event not found")
+    if event is None: raise HTTPException(status_code=404, detail="EVENTO NON TROVATO")
 
     event.title = new_event.title
     event.description = new_event.description
