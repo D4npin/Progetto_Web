@@ -26,7 +26,7 @@ def create_user(user: CreateUser, session: SessionDep) -> UserPublic:
         select(UserDB).where(UserDB.username == user.username)
     ).first()#cerca un eventuale utente già presente, .first() restituisce il primo utetnte trovato (se esiste)
     if existing_user is not None: #se lo username è già presente non possiamo creare un secondo utente con lo stesso username
-        raise HTTPException(status_code = 409, detail = "Username already taken")
+        raise HTTPException(status_code = 409, detail = "Nome utente già in uso")
     user_db = UserDB.model_validate(user)
     session.add(user_db)     #salva user nel database trasformandolo in un oggetto
     session.commit()         #commit() rende effettive le modifiche nel database
@@ -41,7 +41,7 @@ def get_user(username: str, session: SessionDep) -> UserPublic:
         select(UserDB).where(UserDB.username == username)
     ).first() #cerchiamo l'utente il cui username corrisponde a quello ricevuto
     if user is None: #se non si trova nessun utente viene restituito None
-        raise HTTPException(status_code = 404, detail = "User not found")
+        raise HTTPException(status_code = 404, detail = "Utente non trovato")
     return user #se viene trovato l'utente lo restiuiamo
 
 #PARTE FACOLTATIVA (2 delete)
@@ -61,7 +61,7 @@ def delete_user(username: str, session: SessionDep) -> dict:
         select(UserDB).where(UserDB.username == username)
     ).first() #cerchiamo l'utente da cancellare
     if user is None:
-        raise HTTPException(status_code = 404, detail = "User not found") #se non esiste non si può cancellare
+        raise HTTPException(status_code = 404, detail = "Utente non trovato") #se non esiste non si può cancellare
     registrations = session.exec(
         select(Registration).where(Registration.username == username)
     ).all() #controlliamo a quali eventi è registrato l'utente prima di cancellarlo
