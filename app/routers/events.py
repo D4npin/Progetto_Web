@@ -37,7 +37,7 @@ def create_event(session: SessionDep, event: EventCreate):
     event_entry = EventDB.model_validate(event)
     session.add(event_entry)
     session.commit()
-    return event_entry
+    return "Utente creato correttamente"
 
 @router.put("/{id}")
 def replace_event(session: SessionDep, id: int, new_event: EventCreate):
