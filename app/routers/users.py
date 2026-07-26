@@ -51,7 +51,7 @@ def delete_all_users(session: SessionDep) -> dict:
     session.exec(delete(Registration)) #elimino prima le registrazioni e poi gli utenti
     session.exec(delete(UserDB)) #poi tutti gli utenti
     session.commit() #vengono confermate le cancellazioni
-    return {"message": "Utenti cancellati con successo"} #messaggio di conferma
+    return {"Utenti cancellati con successo"} #messaggio di conferma
 
 
 @router.delete("/{username}")
@@ -69,4 +69,4 @@ def delete_user(username: str, session: SessionDep) -> dict:
         session.delete(registration) #quando non ci sono più registrazioni si elimina l'utente
     session.delete(user)
     session.commit() #tutte le cancellazioni sono definitive
-    return {"message": "Utente cancellato con successo"} #messaggio di conferma
+    return {"Utente cancellato con successo"} #messaggio di conferma
