@@ -1,14 +1,14 @@
 #ROUTER DEDICATO AGLI UTENTI
 from fastapi import APIRouter, HTTPException
-from sqlmodel import select, delete           # delete: per cancellare più righe in un colpo
+from sqlmodel import select, delete           #delete: per cancellare più righe in un colpo
 
 from app.models.user import UserDB, UserPublic, CreateUser
 from app.data.db import SessionDep
 from app.models.registration import Registration
 
 
-# prefix: collocato a tutti i path del file
-# tags: raggruppa queste API sotto un'unica sezione "users"
+#prefix: collocato a tutti i path del file
+#tags: raggruppa queste API sotto un'unica sezione "users"
 router = APIRouter(prefix = "/users", tags = ["users"])
 #PARTE OBBLIGATORIA (2 get e 1 post)
 @router.get("")
@@ -24,7 +24,7 @@ def create_user(user: CreateUser, session: SessionDep) -> UserPublic:
     # Controllo prima se esiste già qualcuno con stesso username, se lo username esiste già rispondo 409
     existing_user = session.exec(
         select(UserDB).where(UserDB.username == user.username)
-    ).first()#cerca un eventuale utente già presente, .first() restituisce il primo utetnte trovato (se esiste)
+    ).first()#cerca un eventuale utente già presente .first() restituisce il primo utente trovato (se esiste)
     if existing_user is not None: #se lo username è già presente non possiamo creare un secondo utente con lo stesso username
         raise HTTPException(status_code = 409, detail = "Nome utente già in uso")
     user_db = UserDB.model_validate(user)
@@ -42,13 +42,13 @@ def get_user(username: str, session: SessionDep) -> UserPublic:
     ).first() #cerchiamo l'utente il cui username corrisponde a quello ricevuto
     if user is None: #se non si trova nessun utente viene restituito None
         raise HTTPException(status_code = 404, detail = "Utente non trovato")
-    return user #se viene trovato l'utente lo restiuiamo
+    return user #se viene trovato l'utente lo restituiamo
 
 #PARTE FACOLTATIVA (2 delete)
 @router.delete("")
 def delete_all_users(session: SessionDep) -> dict:
     """Deletes all users"""
-    session.exec(delete(Registration)) #elimino prima le registrazioni e poi gli utenti
+    session.exec(delete(Registration)) #elimino prima le registrazioni
     session.exec(delete(UserDB)) #poi tutti gli utenti
     session.commit() #vengono confermate le cancellazioni
     return {"message": "Utenti cancellati con successo"} #messaggio di conferma
